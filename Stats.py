@@ -10,19 +10,21 @@ class Stats(pygame.Surface):
 
         self.ship = ship
 
-        self.vertical_velocity = ship.dy
-        self.horizontal_velocity = ship.dx
-        self.throttle = ship.throttle
-        self.bearing = ship.bearing
-        self.total_fuel = ship.get_total_fuel()
+        vertical_velocity = ship.dy
+        horizontal_velocity = ship.dx
+        throttle = ship.throttle
+        bearing = ship.bearing
+        total_fuel = ship.get_total_fuel()
 
-        super(Stats, self).__init__((300, 120))
+        super(Stats, self).__init__((300, 100))
 
-        vertical_velocity = self.font.render('Vertical velocity: %s%s' % (round(self.vertical_velocity, 1), 'ms⁻¹'), False, self.colour)
-        horizontal_velocity = self.font.render('Horizontal velocity: %s%s' % (round(self.horizontal_velocity, 1), 'ms⁻¹'), False, self.colour)
-        throttle = self.font.render('Throttle: %s%s' % (round((self.throttle * 100), 0), '%'), False, self.colour)
-        bearing = self.font.render('Bearing: %s' % self.bearing, False, self.colour)
-        total_fuel = self.font.render('Total fuel: %s%s' % (round(self.total_fuel, 0), 'l'), False, self.colour)
+        vertical_velocity = self.font.render('Vertical velocity: %s%s' % (round(vertical_velocity, 1), 'ms⁻¹'),
+                                             False, self.colour)
+        horizontal_velocity = self.font.render('Horizontal velocity: %s%s' % (round(horizontal_velocity, 1),
+                                                                              'ms⁻¹'), False, self.colour)
+        throttle = self.font.render('Throttle: %s%s' % (round((throttle * 100), 0), '%'), False, self.colour)
+        bearing = self.font.render('Bearing: %s' % bearing, False, self.colour)
+        total_fuel = self.font.render('Total fuel: %s%s' % (round(total_fuel, 0), 'l'), False, self.colour)
 
         self.blit(vertical_velocity, (0, 0))
         self.blit(horizontal_velocity, (0, 20))

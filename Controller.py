@@ -18,4 +18,3 @@ class Controller:
                     self.pressed_keys.remove(event.key)
                 elif event.type == QUIT:
                     self.exit = True
-

@@ -30,7 +30,7 @@ class Ship(pygame.Surface):
         self.throttle = 0
         self.bearing = 0
 
-        self.texture = None
+        self.texture = None  # Added because I can't set self to a Surface object.
         super(Ship, self).__init__((50, ship_height), SRCALPHA)
 
         offset = 0
@@ -38,15 +38,21 @@ class Ship(pygame.Surface):
             self.blit(part.texture, (0, offset))
             offset += part.texture.get_rect().height
 
-    def move(self, horizontal_acceleration, vertical_acceleration):
-        self.dx += horizontal_acceleration
-        self.dy += vertical_acceleration
+    def move(self):
+        self.dx += self.get_horizontal_acceleration()
+        self.dy += self.get_vertical_acceleration(GRAVITY['EARTH'])
         self.x += self.dx
         self.y -= self.dy
 
         self.texture = pygame.transform.rotate(self, -self.bearing)
 
-    def set_throttle(self, value):
+    def use_fuel(self):
+        for tank in self.all_tanks:
+            if tank.fuel > 0:
+                tank.deplete_fuel(self.get_fuel_consumption())
+                continue
+
+    def set_throttle_to(self, value):
         if 1 >= value >= 0:
             self.throttle = value
 
@@ -59,14 +65,8 @@ class Ship(pygame.Surface):
             else:
                 self.throttle = 0
 
-    def change_bearing_by(self, value):
-        self.bearing = (value + self.bearing) % 360
-
-    def use_fuel(self, quantity):
-        for tank in self.all_tanks:
-            if tank.fuel > 0:
-                tank.deplete_fuel(quantity)
-                continue
+    def change_bearing_by(self, degrees):
+        self.bearing = (degrees + self.bearing) % 360
 
     def get_fuel_consumption(self):
         fuel_consumption = 0
@@ -89,7 +89,8 @@ class Ship(pygame.Surface):
             total_mass += engine.mass
         return total_mass
 
-    def get_vertical_acceleration(self, mass, gravity):
+    def get_vertical_acceleration(self, gravity):
+        mass = self.get_total_mass()
         total_vertical_force = mass * gravity
         if self.get_total_fuel() > 0:
             for engine in self.all_engines:
@@ -98,8 +99,9 @@ class Ship(pygame.Surface):
         acceleration = total_vertical_force/mass
         return acceleration/MAX_FPS
 
-    def get_horizontal_acceleration(self, mass):
+    def get_horizontal_acceleration(self):
         total_horizontal_force = 0
+        mass = self.get_total_mass()
         for engine in self.all_engines:
             total_horizontal_force += engine.get_horizontal_force(self.bearing, self.throttle)
 
