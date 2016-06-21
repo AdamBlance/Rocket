@@ -102,8 +102,9 @@ class Ship(pygame.Surface):
     def get_horizontal_acceleration(self):
         total_horizontal_force = 0
         mass = self.get_total_mass()
-        for engine in self.all_engines:
-            total_horizontal_force += engine.get_horizontal_force(self.bearing, self.throttle)
+        if self.get_total_fuel() > 0:
+            for engine in self.all_engines:
+                total_horizontal_force += engine.get_horizontal_force(self.bearing, self.throttle)
 
         acceleration = total_horizontal_force/mass
         return acceleration/MAX_FPS
