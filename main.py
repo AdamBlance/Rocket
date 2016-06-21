@@ -1,4 +1,5 @@
 from constants import *
+from ExhaustParticle import ExhaustParticle
 from Engine import Engine
 from FuelTank import FuelTank
 from Controller import Controller
@@ -7,6 +8,11 @@ from Stats import Stats
 
 import pygame
 from pygame.locals import *
+
+
+def get_centre(ship):
+    pos = (ship.x - ship.texture.get_rect().centerx, ship.y - ship.texture.get_rect().centery)
+    return pos
 
 main_surface = pygame.display.set_mode(RESOLUTION)
 
@@ -44,12 +50,18 @@ while running:
     if K_a in keyboard.pressed_keys:
         test_ship.change_bearing_by(-1)
 
+    if test_ship.throttle > 0:
+        test_ship.create_exhaust()
+    for particle in ExhaustParticle.all_particles:
+        particle.move()
+        main_surface.blit(particle.texture, (particle.x, particle.y))
+
     test_ship.move()
     test_ship.use_fuel()
     stats.update()
 
-    pos = test_ship.x - test_ship.texture.get_rect().centerx, test_ship.y - test_ship.texture.get_rect().centery
-    main_surface.blit(test_ship.texture, pos)  # test_ship.texture has to blitted because of complications with objects.
+    # test_ship.texture has to blitted because of complications with objects.
+    main_surface.blit(test_ship.texture, get_centre(test_ship))
     main_surface.blit(stats, (0, RESOLUTION[1] - stats.get_rect().height))
 
     pygame.display.update()

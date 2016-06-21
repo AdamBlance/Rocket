@@ -1,9 +1,9 @@
 from constants import *
+from ExhaustParticle import ExhaustParticle
 from FuelTank import FuelTank
 from Engine import Engine
 
 import pygame
-from pygame.locals import *
 
 
 class Ship(pygame.Surface):
@@ -31,7 +31,8 @@ class Ship(pygame.Surface):
         self.bearing = 0
 
         self.texture = None  # Added because I can't set self to a Surface object.
-        super(Ship, self).__init__((50, ship_height), SRCALPHA)
+        super(Ship, self).__init__((50, ship_height))
+        self.set_colorkey([0, 0, 0])
 
         offset = 0
         for part in parts:
@@ -68,18 +69,21 @@ class Ship(pygame.Surface):
     def change_bearing_by(self, degrees):
         self.bearing = (degrees + self.bearing) % 360
 
-    def get_fuel_consumption(self):
-        fuel_consumption = 0
-        for engine in self.all_engines:
-            fuel_consumption += engine.max_consumption
-        fuel_consumption = (fuel_consumption * self.throttle)/MAX_FPS
-        return fuel_consumption
+    def create_exhaust(self):
+        ExhaustParticle(self.x, self.y, self.bearing, self.throttle, self.dx, self.dy)
 
     def get_total_fuel(self):
         total_fuel = 0
         for tank in self.all_tanks:
             total_fuel += tank.fuel
         return total_fuel
+
+    def get_fuel_consumption(self):
+        fuel_consumption = 0
+        for engine in self.all_engines:
+            fuel_consumption += engine.max_consumption
+        fuel_consumption = (fuel_consumption * self.throttle)/MAX_FPS
+        return fuel_consumption
 
     def get_total_mass(self):
         total_mass = 0
