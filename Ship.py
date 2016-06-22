@@ -3,6 +3,7 @@ from ExhaustParticle import ExhaustParticle
 from FuelTank import FuelTank
 from Engine import Engine
 
+import math
 import pygame
 
 
@@ -39,6 +40,10 @@ class Ship(pygame.Surface):
             self.blit(part.texture, (0, offset))
             offset += part.texture.get_rect().height
 
+        self.texture = pygame.transform.rotate(self, -self.bearing)
+        self.x = self.get_centre_x()
+        self.y = self.get_centre_y()
+
     def move(self):
         self.dx += self.get_horizontal_acceleration()
         self.dy += self.get_vertical_acceleration(GRAVITY['EARTH'])
@@ -70,7 +75,25 @@ class Ship(pygame.Surface):
         self.bearing = (degrees + self.bearing) % 360
 
     def create_exhaust(self):
-        ExhaustParticle(self.x, self.y, self.bearing, self.throttle, self.dx, self.dy)
+        ExhaustParticle(self.get_bottom_x(), self.get_bottom_y(), self.bearing, self.throttle, self.dx, self.dy)
+
+    def get_centre_x(self):
+        x = self.x - self.texture.get_rect().centerx
+        return x
+
+    def get_centre_y(self):
+        y = self.y - self.texture.get_rect().centery
+        return y
+
+    def get_bottom_x(self):
+        distance_to_end = -self.get_rect().height/2 + 35
+        x = self.x - distance_to_end * math.sin(math.radians(-self.bearing))
+        return x
+
+    def get_bottom_y(self):
+        distance_to_end = -self.get_rect().height/2 + 35
+        y = self.y - distance_to_end * math.cos(math.radians(-self.bearing))
+        return y
 
     def get_total_fuel(self):
         total_fuel = 0

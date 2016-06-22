@@ -50,9 +50,9 @@ class ExhaustParticle:
         self.bearing = bearing
         self.dx = k * throttle * math.sin(math.radians(bearing)) + random.randint(-1, 1) * random.random() + ship_dx
         self.dy = k * throttle * math.cos(math.radians(bearing)) + random.randint(-1, 1) * random.random() - ship_dy
-        self.x = x
-        self.y = y
         self.texture = self.all_types[random.randint(0, 8)]
+        self.x = x - self.texture.get_rect().width/2
+        self.y = y - self.texture.get_rect().height/2
 
         self.all_particles.append(self)
 

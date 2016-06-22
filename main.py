@@ -9,17 +9,13 @@ from Stats import Stats
 import pygame
 from pygame.locals import *
 
-
-def get_centre(ship):
-    pos = (ship.x - ship.texture.get_rect().centerx, ship.y - ship.texture.get_rect().centery)
-    return pos
-
 main_surface = pygame.display.set_mode(RESOLUTION)
 
 test_fuel_tank_1 = FuelTank('small_tank')
 test_fuel_tank_2 = FuelTank('medium_tank')
 test_engine = Engine('basic_engine')
 test_ship = Ship([test_fuel_tank_1,
+                  test_fuel_tank_1,
                   test_fuel_tank_2,
                   test_engine])
 
@@ -61,7 +57,7 @@ while running:
     stats.update()
 
     # test_ship.texture has to blitted because of complications with objects.
-    main_surface.blit(test_ship.texture, get_centre(test_ship))
+    main_surface.blit(test_ship.texture, (test_ship.get_centre_x(), test_ship.get_centre_y()))
     main_surface.blit(stats, (0, RESOLUTION[1] - stats.get_rect().height))
 
     pygame.display.update()
